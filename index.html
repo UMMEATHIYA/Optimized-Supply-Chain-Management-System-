@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimized Supply Chain Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .modal-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Optimized Supply Chain Management System</h1>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="#dashboard">
+                    Dashboard
+                </a>
+                <a class="navbar-item" href="#inventory">
+                    Inventory
+                </a>
+                <a class="navbar-item" href="#orders">
+                    Orders
+                </a>
+                <a class="navbar-item" href="#logistics">
+                    Logistics
+                </a>
+                <a class="navbar-item" href="#users">
+                    Users
+                </a>
+            </div>
+        </nav>
+        <div id="dashboard" class="section">
+            <h2 class="subtitle">Dashboard</h2>
+            <div class="columns">
+                <div class="column">
+                    <div class="box">
+                        <h3 class="title is-4">Inventory Levels</h3>
+                        <table class="table is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-tbody">
+                                <!-- populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="box">
+                        <h3 class="title is-4">Order Tracking</h3>
+                        <table class="table is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Status</th>
+                                    <th>Estimated Delivery Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orders-tbody">
+                                <!-- populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="inventory" class="section">
+            <h2 class="subtitle">Inventory Management</h2>
+            <div class="box">
+                <h3 class="title is-4">Add Item</h3>
+                <form id="add-item-form">
+                    <div class="field">
+                        <label class="label">Item Name</label>
+                        <div class="control">
+                            <input class="input" type="text" id="item-name" placeholder="Item Name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Quantity</label>
+                        <div class="control">
+                            <input class="input" type="number" id="quantity" placeholder="Quantity">
+                        </div>
+                    </div>
+                    <button class="button is-primary" id="add-item-btn">Add Item</button>
+                </form>
+            </div>
+            <div class="box">
+                <h3 class="title is-4">Update Item</h3>
+                <form id="update-item-form">
+                    <div class="field">
+                        <label class="label">Item Name</label>
+                        <div class="control">
+                            <input class="input" type="text" id="update-item-name" placeholder="Item Name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Quantity</label>
+                        <div class="control">
+                            <input class="input" type="number" id="update-quantity" placeholder="Quantity">
+                        </div>
+                    </div>
+                    <button class="button is-primary" id="update-item-btn">Update Item</button>
+                </form>
+            </div>
+        </div>
+        <div id="orders" class="section">
+            <h2 class="subtitle">Order Tracking</h2>
+            <div class="box">
+                <h3 class="title is-4">Orders</h3>
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Status</th>
+                            <th>Estimated Delivery Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-tbody">
+                        <!-- populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="logistics" class="section">
+            <h2 class="subtitle">Logistics Optimization</h2>
+            <div class="box">
+                <h3 class="title is-4">Optimize Route</h3>
+                <form id="optimize-route-form">
+                    <div class="field">
+                        <label class="label">Starting Point</label>
+                        <div class="control">
+                            <input class="input" type="text" id="starting-point" placeholder="Starting Point">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Destination</label>
+                        <div class="control">
+                            <input class="input" type="text" id="destination" placeholder="Destination">
+                        </div>
+                    </div>
+                    <button class="button is-primary" id="optimize-route-btn">Optimize Route</button>
+                </form>
+            </div>
+            <div id="map"></div>
+        </div>
+        <div id="users" class="section">
+            <h2 class="subtitle">User Management</h2>
+            <div class="box">
+                <h3 class="title is-4">User Roles</h3>
+                <table class="table is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <!-- populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bulma@0.9.4/js/bulma.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <script>
+        // Initialize Google Maps
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 37.7749, lng: -122.4194 },
+                zoom: 13,
+            });
+        }
+        // Handle add item form submission
+        document.getElementById("add-item-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const itemName = document.getElementById("item-name").value;
+            const quantity = document.getElementById("quantity").value;
+            // Add item to inventory
+        });
+        // Handle update item form submission
+        document.getElementById("update-item-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const itemName = document.getElementById("update-item-name").value;
+            const quantity = document.getElementById("update-quantity").value;
+            // Update item in inventory
+        });
+        // Handle optimize route form submission
+        document.getElementById("optimize-route-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const startingPoint = document.getElementById("starting-point").value;
+            const destination = document.getElementById("destination").value;
+            // Optimize route using Google Maps API
+        });
+        // Initialize map
+        initMap();
+    </script>
+</body>
+</html>
